@@ -11,19 +11,24 @@ import java.util.List;
 public class SalesInformation {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Boolean hasBeenSold;
     private Boolean subscribed;
 
-    @OneToOne(mappedBy = "salesInformation")
+    @OneToOne(mappedBy = "salesInformation", cascade = CascadeType.ALL)
     private GameOwner gameOwner;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JsonIgnore
-    private User user;
+    @ManyToMany(mappedBy = "salesInformation", cascade = CascadeType.ALL)
+    private List<Customer> customers;
 
     public SalesInformation() {
+    }
+
+    public SalesInformation(Long id, Boolean hasBeenSold, Boolean subscribed) {
+        this.id = id;
+        this.hasBeenSold = hasBeenSold;
+        this.subscribed = subscribed;
     }
 
     public Long getId() {
@@ -58,11 +63,11 @@ public class SalesInformation {
         this.gameOwner = gameOwner;
     }
 
-    public User getUser() {
-        return user;
+    public List<Customer> getCustomers() {
+        return customers;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
     }
 }

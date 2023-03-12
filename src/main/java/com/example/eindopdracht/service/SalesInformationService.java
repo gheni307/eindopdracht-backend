@@ -2,13 +2,14 @@ package com.example.eindopdracht.service;
 
 import com.example.eindopdracht.exceptions.RecordNotFoundException;
 import com.example.eindopdracht.dtos.inputdtos.SalesInformationDtoInput;
+import com.example.eindopdracht.models.Customer;
 import com.example.eindopdracht.models.GameOwner;
 import com.example.eindopdracht.models.SalesInformation;
 import com.example.eindopdracht.dtos.outputdtos.SalesInformationDtoOutput;
 import com.example.eindopdracht.models.User;
+import com.example.eindopdracht.repositories.CustomerRepository;
 import com.example.eindopdracht.repositories.GameOwnerRepository;
 import com.example.eindopdracht.repositories.SalesInformationRepository;
-import com.example.eindopdracht.repositories.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -21,16 +22,16 @@ public class SalesInformationService {
 
     private final SalesInformationRepository salesInformationRepository;
     private final GameOwnerRepository gameOwnerRepository;
-    private final UserRepository userRepository;
-    public SalesInformationService(SalesInformationRepository salesInformationRepository, GameOwnerRepository gameOwnerRepository, UserRepository userRepository) {
+    private final CustomerRepository customerRepository;
+    public SalesInformationService(SalesInformationRepository salesInformationRepository, GameOwnerRepository gameOwnerRepository, CustomerRepository customerRepository) {
 
         this.salesInformationRepository = salesInformationRepository;
         this.gameOwnerRepository = gameOwnerRepository;
-        this.userRepository = userRepository;
+        this.customerRepository = customerRepository;
     }
 
-    public SalesInformationDtoOutput addSalesInformation(SalesInformationDtoInput dtoInput, String username){
-        Optional<GameOwner> gameOwner = Optional.ofNullable(gameOwnerRepository.findByUsername(username));
+    public SalesInformationDtoOutput addSalesInformation(SalesInformationDtoInput dtoInput, Long id){
+        Optional<GameOwner> gameOwner = gameOwnerRepository.findById(id);
 
         if (gameOwner.isPresent()){
             SalesInformation info = transferToSalesInformation(dtoInput);
@@ -116,18 +117,22 @@ public class SalesInformationService {
         if (salesInformation.getGameOwner() != null){
             dtoOutput.setGameOwner(salesInformation.getGameOwner());
         }
+        if(salesInformation.getCustomers() != null){
+            dtoOutput.setCustomers(salesInformation.getCustomers());
+        }
+
 
         return dtoOutput;
     }
 
-    public void assignUserToSalesInformation(Long id, String usernameOfUser){
+    public void assignCustomerToSalesInformation(Long id, Long customerId){
         Optional<SalesInformation> salesInformation = salesInformationRepository.findById(id);
-        Optional<User> user = Optional.ofNullable(userRepository.findByUsername(usernameOfUser));
-        if (user.isPresent() && salesInformation.isPresent()){
+        Optional<Customer> customer = customerRepository.findById(customerId);
+        if (customer.isPresent() && salesInformation.isPresent()){
             SalesInformation salesInformation1 = salesInformation.get();
-            User user1 = user.get();
-            salesInformation1.setUser(user1);
-            salesInformationRepository.save(salesInformation1);
+            Customer customer1 = customer.get();
+            customer1.getSalesInformation().add(salesInformation1);
+            customerRepository.save(customer1);
         } else {
             throw new RecordNotFoundException();
         }

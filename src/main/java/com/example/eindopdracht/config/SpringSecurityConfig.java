@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -21,10 +20,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SpringSecurityConfig {
 
     private final CustomUserDetailsService customUserDetailsService;
+
+    private final PasswordEncoder passwordEncoder;
     private final JwtRequestFilter jwtRequestFilter;
 
-    public SpringSecurityConfig(CustomUserDetailsService customUserDetailsService, JwtRequestFilter jwtRequestFilter) {
+    public SpringSecurityConfig(CustomUserDetailsService customUserDetailsService, PasswordEncoder passwordEncoder, JwtRequestFilter jwtRequestFilter) {
         this.customUserDetailsService = customUserDetailsService;
+        this.passwordEncoder = passwordEncoder;
+
         this.jwtRequestFilter = jwtRequestFilter;
     }
 
@@ -32,36 +35,60 @@ public class SpringSecurityConfig {
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         return http.getSharedObject(AuthenticationManagerBuilder.class)
                 .userDetailsService(customUserDetailsService)
-                .passwordEncoder(passwordEncoder())
+                .passwordEncoder(passwordEncoder)
                 .and()
                 .build();
     }
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+
+
+
 
     @Bean
     protected SecurityFilterChain filter (HttpSecurity http) throws Exception {
 
-        //JWT token authentication
         http
                 .csrf().disable()
                 .httpBasic().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/users").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/customer").permitAll()
+                .antMatchers(HttpMethod.POST, "/users/owner").permitAll()
                 .antMatchers(HttpMethod.GET,"/users").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT, "/users/{username}").hasAnyRole("ADMIN", "CUSTOMER", "OWNER")
+                .antMatchers(HttpMethod.GET, "/users/{username}").hasAnyRole("ADMIN", "CUSTOMER", "OWNER")
                 .antMatchers(HttpMethod.POST,"/users/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
-                /*voeg de antmatchers toe voor admin(post en delete) en user (overige)*/
-                /*.antMatchers(HttpMethod.POST,"/games").hasAnyRole("USER", "ADMIN")
-                .antMatchers(HttpMethod.POST,"/games/**").hasAnyRole("USER", "ADMIN")
-                .antMatchers(HttpMethod.GET,"/games").hasAnyRole("USER", "ADMIN")
-                .antMatchers(HttpMethod.GET,"/games/**").hasAnyRole("USER", "ADMIN")*/
+                .antMatchers(HttpMethod.POST, "/gameowners").hasAnyRole("ADMIN", "OWNER")
+                .antMatchers(HttpMethod.GET, "/gameowners").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/gameowners/{id}").hasAnyRole("ADMIN", "OWNER")
+                .antMatchers(HttpMethod.PUT, "/gameowners/{id}/{nameOfImage}").hasAnyRole("ADMIN", "OWNER")
+                .antMatchers(HttpMethod.POST, "/gameowners/{id}/salesInfo/{id}").hasAnyRole("ADMIN", "OWNER")
+                .antMatchers(HttpMethod.PUT, "/gameowners/{id}/user/{username}").hasAnyRole("ADMIN", "OWNER")
+                .antMatchers(HttpMethod.DELETE, "/gameowners/{id}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST,"/customers").hasAnyRole("CUSTOMER", "ADMIN")
+                .antMatchers(HttpMethod.GET,"/customers").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/customers/{id}").hasAnyRole("CUSTOMER", "ADMIN")
+                .antMatchers(HttpMethod.PUT,"/customers/{id}/customer/{username").hasAnyRole("CUSTOMER", "ADMIN")
+                .antMatchers(HttpMethod.PUT,"/customers/{id}/salesinfo/{id}").hasAnyRole("OWNER", "ADMIN")
+                .antMatchers(HttpMethod.PUT,"/customers/{id}/game/{id}").hasAnyRole("OWNER", "ADMIN")
+                .antMatchers(HttpMethod.DELETE,"/customers/{id}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST,"/image/{id}").hasRole("OWNER")
+                .antMatchers(HttpMethod.GET,"/image").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/image/{id}").hasAnyRole("ADMIN", "OWNER")
+                .antMatchers(HttpMethod.GET,"/image/Download/{fileName}").hasAnyRole("ADMIN", "OWNER")
+                .antMatchers(HttpMethod.POST, "/salesInformation/{id}").hasRole("OWNER")
+                .antMatchers(HttpMethod.GET,"/salesInformation").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/salesInformation/{id}").hasRole("OWNER")
+                .antMatchers(HttpMethod.PUT,"/salesInformation/{id}").hasRole("OWNER")
+                .antMatchers(HttpMethod.POST,"/salesInformation/{id}/customer/{id}").hasRole("OWNER")
+                .antMatchers(HttpMethod.DELETE,"/salesInformation/{id}").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST,"/games/{id}").hasRole("OWNER")
+                .antMatchers(HttpMethod.GET,"/games").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/games/{id}").hasRole("OWNER")
+                .antMatchers(HttpMethod.PUT,"/games/{id}").hasRole("OWNER")
+                .antMatchers(HttpMethod.DELETE,"/games/{id}").hasRole("ADMIN")
                 .antMatchers("/authenticated").authenticated()
                 .antMatchers("/authenticate").permitAll()
-                /*allen dit punt mag toegankelijk zijn voor niet ingelogde gebruikers*/
                 .anyRequest().permitAll()
                 .and()
                 .sessionManagement()

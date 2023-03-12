@@ -8,7 +8,6 @@ import com.example.eindopdracht.repositories.GameOwnerRepository;
 import com.example.eindopdracht.repositories.ImageRepository;
 import com.example.eindopdracht.utils.ImageUtils;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -30,8 +29,8 @@ public class ImageDataService {
         this.gameOwnerRepository = gameOwnerRepository;
     }
 
-    public ResponseEntity<String> uploadImage(String userName ,MultipartFile file, ImageDataDto dto) throws IOException {
-        Optional<GameOwner> gameOwner = Optional.ofNullable(gameOwnerRepository.findByUsername(userName));
+    public ResponseEntity<String> uploadImage(Long id ,MultipartFile file, ImageDataDto dto) throws IOException {
+        Optional<GameOwner> gameOwner = gameOwnerRepository.findById(id);
         if (gameOwner.isPresent()){
             ImageData imageData = transferToImage(dto);
             imageRepository.save(imageData.builder()

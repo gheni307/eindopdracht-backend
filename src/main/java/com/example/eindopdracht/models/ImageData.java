@@ -26,7 +26,7 @@ public class ImageData {
     @Lob
     private byte[] imageData;
 
-    @OneToOne(mappedBy = "imageData", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "imageData", cascade = CascadeType.ALL)
     private GameOwner gameOwner;
 
 

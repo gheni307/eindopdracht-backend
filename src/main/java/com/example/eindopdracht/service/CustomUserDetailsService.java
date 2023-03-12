@@ -2,6 +2,7 @@ package com.example.eindopdracht.service;
 
 import com.example.eindopdracht.models.Authority;
 import com.example.eindopdracht.dtos.UserDto;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,11 +14,10 @@ import java.util.List;
 import java.util.Set;
 
 
-/*annotatie*/
 @Service
+@Primary
 public class CustomUserDetailsService implements UserDetailsService {
 
-    /*inject userservice */
     private final UserService userService;
 
     public CustomUserDetailsService(UserService userService) {

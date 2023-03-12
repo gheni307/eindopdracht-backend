@@ -34,7 +34,6 @@ public class GameService {
 
         if (gameRepository.findById(id).isPresent()){
             Game game = gameRepository.findById(id).get();
-            GameDtoOutput dto = transferToDto(game);
 
             return transferToDto(game);
         }else {
@@ -42,8 +41,8 @@ public class GameService {
         }
     }
 
-    public GameDtoOutput addGame(GameDtoInput input, String username){
-        Optional<GameOwner> gameOwner = Optional.ofNullable(gameOwnerRepository.findByUsername(username));
+    public GameDtoOutput addGame(GameDtoInput input, Long id){
+        Optional<GameOwner> gameOwner = gameOwnerRepository.findById(id);
         if (gameOwner.isPresent()){
             Game game = transferToGame(input);
             game.setGameOwner(gameOwner.get());
@@ -56,10 +55,9 @@ public class GameService {
 
     }
 
-    public GameDtoOutput updateGame(Long id, GameDtoInput gameDtoInput, String username){
-        Optional<GameOwner> gameOwner = Optional.ofNullable(gameOwnerRepository.findByUsername(username));
+    public GameDtoOutput updateGame(Long id, GameDtoInput gameDtoInput){
 
-        if (gameRepository.findById(id).isPresent() && gameOwner.isPresent()){
+        if (gameRepository.findById(id).isPresent()){
             Game game = gameRepository.findById(id).get();
             Game game1 = transferToGame(gameDtoInput);
             game1.setId(game.getId());
@@ -71,11 +69,8 @@ public class GameService {
         }
     }
 
-    public void deleteGame(@RequestBody Long id, String username){
-        Optional<GameOwner> gameOwner = Optional.ofNullable(gameOwnerRepository.findByUsername(username));
-        if (gameOwner.isPresent()){
+    public void deleteGame(@RequestBody Long id){
             gameRepository.deleteById(id);
-        }
     }
 
     public List<GameDtoOutput> transferGameListToDto(List<Game> games){
@@ -110,6 +105,10 @@ public class GameService {
         if (game.getGameOwner() != null){
             dto.setGameOwner(game.getGameOwner());
         }
+        if (game.getCustomers() != null){
+            dto.setCustomerList(game.getCustomers());
+        }
+
         return dto;
     }
 

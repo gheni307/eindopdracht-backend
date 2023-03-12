@@ -17,6 +17,9 @@ public class GameDtoInput {
     @NotNull
     private Double price;
 
+    public GameDtoInput() {
+    }
+
     public GameDtoInput(String name, String compatible, String genre, Double price) {
         this.name = name;
         this.compatible = compatible;

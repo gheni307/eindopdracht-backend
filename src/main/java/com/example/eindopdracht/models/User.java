@@ -1,6 +1,5 @@
 package com.example.eindopdracht.models;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
@@ -8,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-/*annotatie*/
 @Entity
 @Table(name = "users")
 public class User {
@@ -29,10 +27,13 @@ public class User {
     @Column
     private String email;
 
-    @OneToMany(mappedBy = "user")
+    @OneToOne(mappedBy = "user")
     @JsonIgnore
-    private List<SalesInformation> salesInformation;
+    private GameOwner gameOwner;
 
+    @OneToOne(mappedBy = "user")
+    @JsonIgnore
+    private Customer customer;
     @OneToMany(
             targetEntity = Authority.class,
             mappedBy = "username",
@@ -58,12 +59,20 @@ public class User {
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email;}
 
-    public List<SalesInformation> getSalesInformation() {
-        return salesInformation;
+    public GameOwner getGameOwner() {
+        return gameOwner;
     }
 
-    public void setSalesInformation(List<SalesInformation> salesInformation) {
-        this.salesInformation = salesInformation;
+    public void setGameOwner(GameOwner gameOwner) {
+        this.gameOwner = gameOwner;
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public Set<Authority> getAuthorities() { return authorities; }

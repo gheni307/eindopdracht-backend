@@ -2,8 +2,6 @@ package com.example.eindopdracht.controllers;
 
 import com.example.eindopdracht.dtos.ImageDataDto;
 import com.example.eindopdracht.service.ImageDataService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,9 +21,9 @@ public class ImageDataController {
         this.imageDataService = imageDataService;
     }
 
-    @PostMapping("/{username}")
-    public ResponseEntity<Object> addImage(@PathVariable("username") String username ,@RequestParam(value = "image", required = false)MultipartFile file, ImageDataDto dto) throws IOException {
-        String uploadImage = String.valueOf(imageDataService.uploadImage(username, file, dto));
+    @PostMapping("/{id}")
+    public ResponseEntity<Object> addImage(@PathVariable("id") Long id , @RequestParam(value = "image", required = false)MultipartFile file, ImageDataDto dto) throws IOException {
+        String uploadImage = String.valueOf(imageDataService.uploadImage(id, file, dto));
 
         return ResponseEntity.ok().body(uploadImage);
     }

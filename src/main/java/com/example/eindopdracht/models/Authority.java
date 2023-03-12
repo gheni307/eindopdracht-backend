@@ -3,7 +3,6 @@ package com.example.eindopdracht.models;
 import javax.persistence.*;
 import java.io.Serializable;
 
-/*annotatie*/
 @Entity
 @IdClass(AuthorityKey.class)
 @Table(name = "authorities")

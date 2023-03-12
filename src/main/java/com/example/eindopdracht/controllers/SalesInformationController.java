@@ -20,11 +20,11 @@ public class SalesInformationController {
         this.salesInformationService = salesInformationService;
     }
 
-    @PostMapping("/{username}")
+    @PostMapping("/{id}")
     @Transactional
-    public ResponseEntity<Object> addSalesInformation(@Valid @RequestBody SalesInformationDtoInput dtoInput, @PathVariable String username){
+    public ResponseEntity<Object> addSalesInformation(@Valid @RequestBody SalesInformationDtoInput dtoInput, @PathVariable Long id){
 
-        SalesInformationDtoOutput dtoOutput = salesInformationService.addSalesInformation(dtoInput, username);
+        SalesInformationDtoOutput dtoOutput = salesInformationService.addSalesInformation(dtoInput, id);
 
         return ResponseEntity.created(null).body(dtoOutput);
     }
@@ -53,9 +53,9 @@ public class SalesInformationController {
 
         return ResponseEntity.ok().body(dtoOutput);
     }
-    @PutMapping("/{id}/{username}")
-    public void  assignUserToSalesInformation(@PathVariable("id") Long id, @PathVariable("username") String usernameOfUser){
-        salesInformationService.assignUserToSalesInformation(id, usernameOfUser);
+    @PostMapping("/{id}/customer/{id}")
+    public void  assignCustomerToSalesInformation(@PathVariable("id") Long id, @PathVariable("id") Long customerId){
+        salesInformationService.assignCustomerToSalesInformation(id, customerId);
     }
 
     @DeleteMapping("/{id}")

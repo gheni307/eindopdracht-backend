@@ -3,14 +3,10 @@ package com.example.eindopdracht.service;
 
 import com.example.eindopdracht.exceptions.UsernameNotFoundException;
 import com.example.eindopdracht.models.Authority;
-import com.example.eindopdracht.models.SalesInformation;
 import com.example.eindopdracht.models.User;
 import com.example.eindopdracht.dtos.UserDto;
-import com.example.eindopdracht.repositories.SalesInformationRepository;
 import com.example.eindopdracht.repositories.UserRepository;
 import com.example.eindopdracht.utils.RandomStringGenerator;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,15 +18,14 @@ import java.util.Set;
 @Service
 public class UserService {
 
-    private final UserRepository userRepository;
-    private final SalesInformationRepository salesInformationRepository;
-    @Autowired
-    @Lazy
-    private PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, SalesInformationRepository salesInformationRepository) {
+    private final PasswordEncoder passwordEncoder;
+
+    private final UserRepository userRepository;
+
+    public UserService(PasswordEncoder passwordEncoder, UserRepository userRepository) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
-        this.salesInformationRepository = salesInformationRepository;
     }
 
     public List<UserDto> getUsers() {
@@ -72,7 +67,7 @@ public class UserService {
     public void updateUser(String username, UserDto newUser) {
         if (!userRepository.existsById(username)) throw new UsernameNotFoundException(username);
         User user = userRepository.findById(username).get();
-        user.setPassword(newUser.getPassword());
+        user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         userRepository.save(user);
     }
 

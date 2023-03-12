@@ -1,9 +1,9 @@
 package com.example.eindopdracht.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Game {
@@ -17,8 +17,12 @@ public class Game {
     private String genre;
     private Double price;
 
-    @ManyToOne
+    @ManyToOne()
     private GameOwner gameOwner;
+
+
+    @ManyToMany(mappedBy = "games",cascade = CascadeType.ALL)
+    private List<Customer> customers;
 
     public Game() {
     }
@@ -29,6 +33,16 @@ public class Game {
         this.compatible = compatible;
         this.genre = genre;
         this.price = price;
+    }
+
+    public Game(Long id, String name, String compatible, String genre, Double price, GameOwner gameOwner, List<Customer> customers) {
+        this.id = id;
+        this.name = name;
+        this.compatible = compatible;
+        this.genre = genre;
+        this.price = price;
+        this.gameOwner = gameOwner;
+        this.customers = customers;
     }
 
     public Long getId() {
@@ -77,5 +91,13 @@ public class Game {
 
     public void setGameOwner(GameOwner gameOwner) {
         this.gameOwner = gameOwner;
+    }
+
+    public List<Customer> getCustomers() {
+        return customers;
+    }
+
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
     }
 }

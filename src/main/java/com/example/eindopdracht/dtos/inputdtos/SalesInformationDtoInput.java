@@ -1,7 +1,9 @@
 package com.example.eindopdracht.dtos.inputdtos;
 
+import com.example.eindopdracht.models.Customer;
 import com.example.eindopdracht.models.GameOwner;
 import com.example.eindopdracht.models.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -13,7 +15,8 @@ public class SalesInformationDtoInput {
     @NotNull
     private Boolean subscribed;
     private GameOwner gameOwner;
-    private List<User> users;
+    @JsonIgnore
+    private List<Customer> customers;
 
     public SalesInformationDtoInput() {
     }
@@ -21,6 +24,13 @@ public class SalesInformationDtoInput {
     public SalesInformationDtoInput(Boolean hasBeenSold, Boolean subscribed) {
         this.hasBeenSold = hasBeenSold;
         this.subscribed = subscribed;
+    }
+
+    public SalesInformationDtoInput(Boolean hasBeenSold, Boolean subscribed, GameOwner gameOwner, List<Customer> customers) {
+        this.hasBeenSold = hasBeenSold;
+        this.subscribed = subscribed;
+        this.gameOwner = gameOwner;
+        this.customers = customers;
     }
 
     public Boolean getHasBeenSold() {
@@ -47,11 +57,11 @@ public class SalesInformationDtoInput {
         this.gameOwner = gameOwner;
     }
 
-    public List<User> getUsers() {
-        return users;
+    public List<Customer> getCustomers() {
+        return customers;
     }
 
-    public void setUsers(List<User> users) {
-        this.users = users;
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
     }
 }

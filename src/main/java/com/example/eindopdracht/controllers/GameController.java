@@ -20,15 +20,16 @@ public class GameController {
         this.gameService = gameService;
     }
 
-    @PostMapping("/{username}")
+    @PostMapping("/{id}")
     @Transactional
-    public ResponseEntity<Object> addGame(@Valid @RequestBody GameDtoInput gameDtoInput, @PathVariable("username") String username){
-        GameDtoOutput dtoOutput = gameService.addGame(gameDtoInput, username);
+    public ResponseEntity<Object> addGame(@Valid @RequestBody GameDtoInput gameDtoInput, @PathVariable("id") Long id){
+        GameDtoOutput dtoOutput = gameService.addGame(gameDtoInput, id);
 
         return ResponseEntity.created(null).body(dtoOutput);
     }
 
     @GetMapping("")
+    @Transactional
     public ResponseEntity<List<GameDtoOutput>> getAllGames(){
         List<GameDtoOutput> dtoOutputs = gameService.getAllGames();
 
@@ -44,20 +45,21 @@ public class GameController {
 
 
 
-    @PutMapping("/{id}/{username}")
+    @PutMapping("/{id}")
     @Transactional
-    public ResponseEntity<Object> updateGame(@PathVariable Long id, @RequestBody GameDtoInput gameDtoInput, @PathVariable("username") String username){
-        GameDtoOutput dto = gameService.updateGame(id, gameDtoInput, username);
+    public ResponseEntity<Object> updateGame(@PathVariable("id") Long id, @RequestBody GameDtoInput gameDtoInput){
+        GameDtoOutput dto = gameService.updateGame(id, gameDtoInput);
 
         return ResponseEntity.ok().body(dto);
     }
 
-    @DeleteMapping("/{id}/{username}")
+    @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Object> deleteGame(@PathVariable Long id, @PathVariable("username") String username){
-        gameService.deleteGame(id, username);
+    public ResponseEntity<Object> deleteGame(@PathVariable Long id){
+        gameService.deleteGame(id);
 
         return ResponseEntity.noContent().build();
     }
+
 
 }

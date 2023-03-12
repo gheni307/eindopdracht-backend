@@ -1,7 +1,6 @@
 package com.example.eindopdracht.dtos;
 
 import com.example.eindopdracht.models.Authority;
-import com.example.eindopdracht.models.SalesInformation;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.Set;
@@ -13,7 +12,6 @@ public class UserDto {
     public Boolean enabled;
     public String apikey;
     public String email;
-    public SalesInformation salesInformation;
     @JsonSerialize
     public Set<Authority> authorities;
 
@@ -65,11 +63,4 @@ public class UserDto {
         this.authorities = authorities;
     }
 
-    public SalesInformation getSalesInformation() {
-        return salesInformation;
-    }
-
-    public void setSalesInformation(SalesInformation salesInformation) {
-        this.salesInformation = salesInformation;
-    }
 }

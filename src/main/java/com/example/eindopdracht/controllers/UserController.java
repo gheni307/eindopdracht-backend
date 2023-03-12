@@ -43,11 +43,23 @@ public class UserController {
 
     }
 
-    @PostMapping(value = "")
-    public ResponseEntity<UserDto> createKlant(@RequestBody UserDto dto) {;
+    @PostMapping(value = "/customer")
+    public ResponseEntity<UserDto> createCustomer(@RequestBody UserDto dto) {;
 
         String newUsername = userService.createUser(dto);
-        userService.addAuthority(newUsername, "ROLE_USER");
+        userService.addAuthority(newUsername, "ROLE_CUSTOMER");
+
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
+                .buildAndExpand(newUsername).toUri();
+
+        return ResponseEntity.created(location).build();
+    }
+
+    @PostMapping(value = "/owner")
+    public ResponseEntity<UserDto> createOwner(@RequestBody UserDto dto){
+
+        String newUsername = userService.createUser(dto);
+        userService.addAuthority(newUsername, "ROLE_OWNER");
 
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{username}")
                 .buildAndExpand(newUsername).toUri();

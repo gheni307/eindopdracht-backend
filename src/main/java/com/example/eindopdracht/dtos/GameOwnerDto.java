@@ -1,74 +1,43 @@
 package com.example.eindopdracht.dtos;
 
-import com.example.eindopdracht.models.Authority;
 import com.example.eindopdracht.models.SalesInformation;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-
-import java.util.Set;
+import com.example.eindopdracht.models.User;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 
 public class GameOwnerDto {
 
-    public String username;
-    public String password;
-    public Boolean enabled;
-    public String apikey;
-    public String email;
+    private Long id;
 
-    public byte[] imageData;
-    public SalesInformation salesInformation;
-    @JsonSerialize
-    public Set<Authority> authorities;
+    @JsonIncludeProperties("username")
+    private User user;
 
-    public String getUsername() {
-        return username;
+    @JsonIncludeProperties("id")
+    private SalesInformation salesInformation;
+
+    public GameOwnerDto() {
     }
 
-    public String getPassword() {
-        return password;
+    public GameOwnerDto(Long id, User user, SalesInformation salesInformation) {
+        this.id = id;
+        this.user = user;
+        this.salesInformation = salesInformation;
     }
 
-    public Boolean getEnabled() {
-        return enabled;
+    public Long getId() {
+        return id;
     }
 
-    public String getApikey() {
-        return apikey;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getEmail() {
-        return email;
+    public User getUser() {
+        return user;
     }
 
-    public byte[] getImageData() {
-        return imageData;
-    }
-
-    public void setImageData(byte[] imageData) {
-        this.imageData = imageData;
-    }
-
-    public Set<Authority> getAuthorities() {
-        return authorities;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setEnabled(Boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public void setApikey(String apikey) {
-        this.apikey = apikey;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public SalesInformation getSalesInformation() {
@@ -79,7 +48,4 @@ public class GameOwnerDto {
         this.salesInformation = salesInformation;
     }
 
-    public void setAuthorities(Set<Authority> authorities) {
-        this.authorities = authorities;
-    }
 }

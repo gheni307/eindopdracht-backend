@@ -1,7 +1,9 @@
 package com.example.eindopdracht.dtos.outputdtos;
 
+import com.example.eindopdracht.models.Customer;
 import com.example.eindopdracht.models.GameOwner;
-import com.example.eindopdracht.models.User;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIncludeProperties;
 import lombok.AllArgsConstructor;
 
 import java.util.List;
@@ -12,8 +14,10 @@ public class SalesInformationDtoOutput {
     private Long id;
     private Boolean hasBeenSold;
     private Boolean subscribed;
+    @JsonIncludeProperties("id")
     private GameOwner gameOwner;
-    private List<User> userList;
+    @JsonIncludeProperties("id")
+    private List<Customer> customers;
 
     public SalesInformationDtoOutput() {
     }
@@ -50,11 +54,11 @@ public class SalesInformationDtoOutput {
         this.gameOwner = gameOwner;
     }
 
-    public List<User> getUserList() {
-        return userList;
+    public List<Customer> getCustomers() {
+        return customers;
     }
 
-    public void setUserList(List<User> userList) {
-        this.userList = userList;
+    public void setCustomers(List<Customer> customers) {
+        this.customers = customers;
     }
 }
